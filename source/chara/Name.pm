@@ -64,11 +64,11 @@ sub Init{
 sub GetData{
     my $self    = shift;
     my $e_no    = shift;
-    my $link_data_node = shift;
+    my $table_charachter_data_node = shift;
     
     $self->{ENo} = $e_no;
 
-    $self->GetNameData($link_data_node);
+    $self->GetNameData($table_charachter_data_node);
     
     return;
 }
@@ -79,10 +79,8 @@ sub GetData{
 #-----------------------------------#
 sub GetNameData{
     my $self  = shift;
-    my $link_data_node = shift;
+    my $table_charachter_data_node = shift;
     my ($name, $player) = ("", "");
-
-    my $table_charachter_data_node = $link_data_node->parent->parent->parent->right->right->right;
 
     my $b_W5i_nodes = &GetNode::GetNode_Tag_Attr("b", "class", "W5i", \$table_charachter_data_node);
     my $child_table_nodes = &GetNode::GetNode_Tag("table", \$table_charachter_data_node);

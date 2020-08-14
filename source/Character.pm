@@ -116,9 +116,10 @@ sub ParsePage{
     $tree->parse($content);
 
     my $link_data_nodes = &GetNode::GetNode_Tag_Attr("a", "name", "DATA",     \$tree);
+    my $table_charachter_data_node = $$link_data_nodes[0]->parent->parent->parent->right->right->right;
 
     # データリスト取得
-    if (exists($self->{DataHandlers}{Name})) {$self->{DataHandlers}{Name}->GetData ($e_no, $$link_data_nodes[0])};
+    if (exists($self->{DataHandlers}{Name})) {$self->{DataHandlers}{Name}->GetData ($e_no, $table_charachter_data_node)};
 
     $tree = $tree->delete;
 }
