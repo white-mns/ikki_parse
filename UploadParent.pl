@@ -51,7 +51,9 @@ sub Main {
     if (ConstData::EXE_NEW) {
     }
     if (ConstData::EXE_CHARA) {
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,              "names",               "./output/chara/name_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,       "names",       "./output/chara/name_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_STATUS,     "statuses",    "./output/chara/status_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRODUCTION, "productions", "./output/chara/production_");
     }
     if (ConstData::EXE_BATTLE) {
     }
