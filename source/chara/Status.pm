@@ -92,7 +92,6 @@ sub GetData{
 sub GetNameData{
     my $self  = shift;
     my $table_charachter_data_node = shift;
-    my ($name, $player) = ("", "");
     my %statuses = ();
     my %status_linking = (
                         "CLV" => "clv",
