@@ -61,7 +61,7 @@ sub Init{
 #-----------------------------------#
 #    データ取得
 #------------------------------------
-#    引数｜e_no,名前データノード
+#    引数｜e_no,キャラクターデータノード
 #-----------------------------------#
 sub GetData{
     my $self    = shift;
@@ -70,16 +70,16 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
-    $self->GetNameData($table_charachter_data_node);
+    $self->GetProductionData($table_charachter_data_node);
     
     return;
 }
 #-----------------------------------#
-#    名前データ取得
+#    生産Lvデータ取得
 #------------------------------------
-#    引数｜名前データノード
+#    引数｜キャラクターデータノード
 #-----------------------------------#
-sub GetNameData{
+sub GetProductionData{
     my $self  = shift;
     my $table_charachter_data_node = shift;
     my %statuses = ();
