@@ -45,9 +45,11 @@ sub Init{
 
     #インスタンス作成
     $self->{DataHandlers}{ProperName} = StoreProperName->new();
+    $self->{DataHandlers}{EmbryoName} = StoreProperName->new();
 
     #他パッケージへの引き渡し用インスタンス
     $self->{CommonDatas}{ProperName} = $self->{DataHandlers}{ProperName};
+    $self->{CommonDatas}{EmbryoName} = $self->{DataHandlers}{EmbryoName};
 
     my $header_list = "";
     my $output_file = "";
@@ -59,6 +61,14 @@ sub Init{
     ];
     $output_file = "./output/data/". "proper_name" . ".csv";
     $self->{DataHandlers}{ProperName}->Init($header_list, $output_file," ");
+
+    # 固有名詞の初期化
+    $header_list = [
+                "embryo_id",
+                "name",
+    ];
+    $output_file = "./output/data/". "embryo_name" . ".csv";
+    $self->{DataHandlers}{EmbryoName}->Init($header_list, $output_file," ");
 
     return;
 }
