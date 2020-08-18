@@ -48,6 +48,7 @@ sub Main {
     if (ConstData::EXE_DATA) {
         &UploadData($upload, ConstData::EXE_DATA_PROPER_NAME,     "proper_names",    "./output/data/proper_name.csv");
         &UploadData($upload, ConstData::EXE_DATA_EMBRYO_NAME,     "embryo_names",    "./output/data/embryo_name.csv");
+        &UploadData($upload, ConstData::EXE_DATA_SKILL_DATA,      "skill_data",     "./output/data/skill_data.csv");
     }
     if (ConstData::EXE_NEW) {
     }
@@ -55,7 +56,8 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,       "names",       "./output/chara/name_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_STATUS,     "statuses",    "./output/chara/status_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRODUCTION, "productions", "./output/chara/production_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,     "embryos",    "./output/chara/embryo_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,     "embryos",     "./output/chara/embryo_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_SKILL,      "skills",      "./output/chara/skill_");
     }
     if (ConstData::EXE_BATTLE) {
     }

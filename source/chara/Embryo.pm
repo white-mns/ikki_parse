@@ -1,5 +1,5 @@
 #===================================================================
-#        ステータス取得パッケージ
+#        所持エンブリオ・所持スキル取得パッケージ
 #-------------------------------------------------------------------
 #            (C) 2020 @white_mns
 #===================================================================
@@ -38,7 +38,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{Data}  = StoreData->new();
+    $self->{Datas}{Embryo}  = StoreData->new();
+    $self->{Datas}{Skill}  = StoreData->new();
     my $header_list = "";
    
     $header_list = [
@@ -51,17 +52,29 @@ sub Init{
                 "lv",
     ];
 
-    $self->{Datas}{Data}->Init($header_list);
-    
+    $self->{Datas}{Embryo}->Init($header_list);
+
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "e_no",
+                "order",
+                "skill_id",
+                "gift_open",
+    ];
+
+    $self->{Datas}{Skill}->Init($header_list);
+   
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/chara/embryo_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Embryo}->SetOutputName( "./output/chara/embryo_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Skill}->SetOutputName ( "./output/chara/skill_" .  $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     return;
 }
 
 #-----------------------------------#
 #    データ取得
 #------------------------------------
-#    引数｜e_no,名前データノード
+#    引数｜e_no,キャラクターデータノード
 #-----------------------------------#
 sub GetData{
     my $self    = shift;
@@ -74,10 +87,11 @@ sub GetData{
     
     return;
 }
+
 #-----------------------------------#
-#    エンブリオデータ取得
+#    所持エンブリオデータ取得
 #------------------------------------
-#    引数｜名前データノード
+#    引数｜キャラクターデータノード
 #-----------------------------------#
 sub GetEmbryoData{
     my $self  = shift;
@@ -121,12 +135,50 @@ sub GetEmbryoData{
             $lv = $2;
         }
 
-        $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $order, $embryo_id, $is_physics, $lv) ));
+        $self->{Datas}{Embryo}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $order, $embryo_id, $is_physics, $lv) ));
+        my $div_Enb_node = $embryo_right_node->right;
+        $self->GetSkillData($div_Enb_node, $order, $embryo_id, $is_physics);
 
     }
     return;
 }
 
+#-----------------------------------#
+#    所持スキルデータ取得
+#------------------------------------
+#    引数｜スキルデータノード
+#-----------------------------------#
+sub GetSkillData{
+    my $self  = shift;
+    my $div_Enb_node = shift;
+    my $order = shift;
+    my $embryo_id  = shift;
+    my $is_physics = shift;
+
+    if ($div_Enb_node->tag ne "div") {return;}
+
+    my $table_skill_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "PD0", \$div_Enb_node);
+    my $tr_nodes = &GetNode::GetNode_Tag("tr", \$$table_skill_nodes[0]);
+
+    foreach my $tr_node (@$tr_nodes) {
+        my ($skill_id, $gift_open) = (0, 0);
+        
+        my $td_nodes = &GetNode::GetNode_Tag("td", \$tr_node);
+
+        if ($$td_nodes[0]->as_text !~ /\d/) { next;}
+
+        my $gift_id = $self->{CommonDatas}{ProperName}->GetOrAddId($$td_nodes[3]->as_text);
+
+        $gift_open = ($$td_nodes[3]->as_text ne "-") ? 1 : 0;
+        my $gp = ($$td_nodes[4]->as_text ne "") ? $$td_nodes[4]->as_text : 0;
+
+        $skill_id = $self->{CommonDatas}{SkillData}->GetOrAddId($gift_open, [$$td_nodes[1]->as_text, $embryo_id, $is_physics, $$td_nodes[0]->as_text, $$td_nodes[2]->as_text, $gift_id, $gp]);
+
+        $self->{Datas}{Skill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $order, $skill_id, $gift_open) ));
+
+    }
+    return;
+}
 #-----------------------------------#
 #    出力
 #------------------------------------

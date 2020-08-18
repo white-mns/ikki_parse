@@ -20,11 +20,13 @@ use warnings;
     use constant EXE_DATA                 => 1;
         use constant EXE_DATA_PROPER_NAME        => 1;
         use constant EXE_DATA_EMBRYO_NAME        => 1;
+        use constant EXE_DATA_SKILL_DATA         => 1;
     use constant EXE_CHARA                => 1;  
         use constant EXE_CHARA_NAME              => 1;
         use constant EXE_CHARA_STATUS            => 1;
         use constant EXE_CHARA_PRODUCTION        => 1;
         use constant EXE_CHARA_EMBRYO            => 1;
+        use constant EXE_CHARA_SKILL             => 1;
     use constant EXE_BATTLE               => 1;
     use constant EXE_NEW                  => 1;
 
