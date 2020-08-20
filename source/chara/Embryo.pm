@@ -83,7 +83,11 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
-    $self->GetEmbryoData($table_PD2_nodes);
+    my $embryo_title_node = $self->GetTitleNode($table_PD2_nodes, "エンブリオ");
+
+    if (!$embryo_title_node) {return;}
+
+    $self->GetEmbryoData($embryo_title_node);
     
     return;
 }
@@ -95,22 +99,11 @@ sub GetData{
 #-----------------------------------#
 sub GetEmbryoData{
     my $self  = shift;
-    my $table_PD2_nodes = shift;
-
-    my $embryo_title_node = "";
-
-    foreach my $node (@$table_PD2_nodes) {
-       if ($node->as_text eq "エンブリオ") {
-           $embryo_title_node = $node;
-       }
-    }
-
-    if ($embryo_title_node !~ /HASH/) {return;}
+    my $embryo_title_node = shift;
 
     my $order = 0;
 
     my @embryo_right_nodes = $embryo_title_node->right;
-
 
     foreach my $embryo_right_node (@embryo_right_nodes) {
         if ($embryo_right_node->attr("class") && $embryo_right_node->attr("class") eq "PD2") {last;}
@@ -179,6 +172,25 @@ sub GetSkillData{
     }
     return;
 }
+
+#-----------------------------------#
+#    項目画像テーブルノード取得
+#------------------------------------
+#    引数｜項目画像テーブルノード一覧
+#-----------------------------------#
+sub GetTitleNode{
+    my $self  = shift;
+    my $table_PD2_nodes = shift;
+    my $title = shift;
+
+    foreach my $node (@$table_PD2_nodes) {
+       if ($node->as_text eq $title) {
+           return $node;
+       }
+    }
+    return;
+}
+
 #-----------------------------------#
 #    出力
 #------------------------------------
