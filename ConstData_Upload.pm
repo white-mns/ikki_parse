@@ -27,6 +27,10 @@ use warnings;
         use constant EXE_CHARA_PRODUCTION        => 1;
         use constant EXE_CHARA_EMBRYO            => 1;
         use constant EXE_CHARA_SKILL             => 1;
+        use constant EXE_CHARA_ITEM              => 1;
+    use constant EXE_NEW                  => 1;  
+        use constant EXE_NEW_ITEM                => 1;
+        use constant EXE_NEW_ITEM_FUKA           => 1;
     use constant EXE_BATTLE               => 1;
     use constant EXE_NEW                  => 1;
 

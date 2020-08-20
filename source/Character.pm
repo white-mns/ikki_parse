@@ -21,6 +21,7 @@ require "./source/chara/Name.pm";
 require "./source/chara/Status.pm";
 require "./source/chara/Production.pm";
 require "./source/chara/Embryo.pm";
+require "./source/chara/Item.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -56,6 +57,7 @@ sub Init{
     if (ConstData::EXE_CHARA_STATUS)     { $self->{DataHandlers}{Status}     = Status->new();}
     if (ConstData::EXE_CHARA_PRODUCTION) { $self->{DataHandlers}{Production} = Production->new();}
     if (ConstData::EXE_CHARA_EMBRYO)     { $self->{DataHandlers}{Embryo}     = Embryo->new();}
+    if (ConstData::EXE_CHARA_ITEM)       { $self->{DataHandlers}{Item}       = Item->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -130,6 +132,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Status}))     {$self->{DataHandlers}{Status}->GetData     ($e_no, $table_charachter_data_node)};
     if (exists($self->{DataHandlers}{Production})) {$self->{DataHandlers}{Production}->GetData ($e_no, $table_charachter_data_node)};
     if (exists($self->{DataHandlers}{Embryo}))     {$self->{DataHandlers}{Embryo}->GetData     ($e_no, $table_PD2_nodes)};
+    if (exists($self->{DataHandlers}{Item}))       {$self->{DataHandlers}{Item}->GetData       ($e_no, $table_PD2_nodes)};
 
     $tree = $tree->delete;
 }

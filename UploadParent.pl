@@ -51,6 +51,8 @@ sub Main {
         &UploadData($upload, ConstData::EXE_DATA_SKILL_DATA,      "skill_data",     "./output/data/skill_data.csv");
     }
     if (ConstData::EXE_NEW) {
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM,         "new_items",       "./output/new/item_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM_FUKA,    "new_item_fukas",  "./output/new/item_fuka_");
     }
     if (ConstData::EXE_CHARA) {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,       "names",       "./output/chara/name_");
@@ -58,6 +60,7 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRODUCTION, "productions", "./output/chara/production_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,     "embryos",     "./output/chara/embryo_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_SKILL,      "skills",      "./output/chara/skill_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ITEM,       "items",       "./output/chara/item_");
     }
     if (ConstData::EXE_BATTLE) {
     }
