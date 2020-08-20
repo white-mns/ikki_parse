@@ -10,6 +10,10 @@ use strict;
 use warnings;
 require "./source/lib/Store_Data.pm";
 require "./source/lib/Store_HashData.pm";
+
+require "./source/new/NewEmbryo.pm";
+require "./source/new/NewSkill.pm";
+
 use ConstData;        #定数呼び出し
 use source::lib::GetNode;
 
@@ -40,6 +44,12 @@ sub Init{
     #初期化
     $self->{Datas}{Embryo}  = StoreData->new();
     $self->{Datas}{Skill}  = StoreData->new();
+    $self->{Datas}{NewEmbryo} = NewEmbryo->new();
+    $self->{Datas}{NewSkill} = NewSkill->new();
+
+    $self->{Datas}{NewEmbryo}->Init    ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
+    $self->{Datas}{NewSkill}->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
+
     my $header_list = "";
    
     $header_list = [
@@ -132,6 +142,8 @@ sub GetEmbryoData{
         my $div_Enb_node = $embryo_right_node->right;
         $self->GetSkillData($div_Enb_node, $order, $embryo_id, $is_physics);
 
+        $self->{Datas}{NewEmbryo}->RecordNewEmbryoData($embryo_id);
+
     }
     return;
 }
@@ -168,6 +180,8 @@ sub GetSkillData{
         $skill_id = $self->{CommonDatas}{SkillData}->GetOrAddId($gift_open, [$$td_nodes[1]->as_text, $embryo_id, $is_physics, $$td_nodes[0]->as_text, $$td_nodes[2]->as_text, $gift_id, $gp]);
 
         $self->{Datas}{Skill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $order, $skill_id, $gift_open) ));
+
+        $self->{Datas}{NewSkill}->RecordNewSkillData($skill_id);
 
     }
     return;

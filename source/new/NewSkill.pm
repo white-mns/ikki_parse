@@ -1,7 +1,7 @@
 #===================================================================
-#        新出アイテム情報取得パッケージ
+#        新出スキル取得パッケージ
 #-------------------------------------------------------------------
-#            (C) 2019 @white_mns
+#            (C) 2020 @white_mns
 #===================================================================
 
 
@@ -17,7 +17,7 @@ use source::lib::GetNode;
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#     
-package NewItemFuka;
+package NewSkill;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -38,22 +38,22 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{NewItemFuka} = StoreData->new();
-    $self->{Datas}{AllItemFuka} = StoreData->new();
+    $self->{Datas}{NewSkill} = StoreData->new();
+    $self->{Datas}{AllSkill} = StoreData->new();
     my $header_list = "";
    
     $header_list = [
                 "result_no",
                 "generate_no",
-                "fuka_id",
+                "skill_id",
     ];
 
-    $self->{Datas}{NewItemFuka}->Init($header_list);
-    $self->{Datas}{AllItemFuka}->Init($header_list);
+    $self->{Datas}{NewSkill}->Init($header_list);
+    $self->{Datas}{AllSkill}->Init($header_list);
     
     #出力ファイル設定
-    $self->{Datas}{NewItemFuka}->SetOutputName( "./output/new/item_fuka_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
-    $self->{Datas}{AllItemFuka}->SetOutputName( "./output/new/all_item_fuka_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{NewSkill}->SetOutputName( "./output/new/skill_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{AllSkill}->SetOutputName( "./output/new/all_skill_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     $self->ReadLastNewData();
 
@@ -68,7 +68,7 @@ sub ReadLastNewData(){
     
     my $file_name = "";
     # 前回結果の確定版ファイルを探索
-    $file_name = "./output/new/all_item_fuka_" . sprintf("%d", ($self->{ResultNo} - 1)) . "_0.csv" ;
+    $file_name = "./output/new/all_skill_" . sprintf("%d", ($self->{ResultNo} - 1)) . "_0.csv" ;
     
     #既存データの読み込み
     my $content = &IO::FileRead ( $file_name );
@@ -79,9 +79,9 @@ sub ReadLastNewData(){
     foreach my  $data_set(@file_data){
         my $new_item_use_datas = []; 
         @$new_item_use_datas   = split(ConstData::SPLIT, $data_set);
-        my $fuka_id = $$new_item_use_datas[2];
-        if(!exists($self->{AllItemFuka}{$fuka_id})){
-            $self->{AllItemFuka}{$fuka_id} = [$self->{ResultNo}, $self->{GenerateNo}, $fuka_id];
+        my $skill_id = $$new_item_use_datas[2];
+        if(!exists($self->{AllSkill}{$skill_id})){
+            $self->{AllSkill}{$skill_id} = [$self->{ResultNo}, $self->{GenerateNo}, $skill_id];
         }
     }
 
@@ -89,19 +89,19 @@ sub ReadLastNewData(){
 }
 
 #-----------------------------------#
-#    新出アイテム付加の判定と記録
+#    新出スキルの判定と記録
 #------------------------------------
-#    引数｜固有名詞ID
+#    引数｜スキルID
 #-----------------------------------#
-sub RecordNewItemFukaData{
+sub RecordNewSkillData{
     my $self    = shift;
-    my $fuka_id = shift;
+    my $skill_id = shift;
 
-    if (exists($self->{AllItemFuka}{$fuka_id})) {return;}
+    if (exists($self->{AllSkill}{$skill_id})) {return;}
 
-    $self->{Datas}{NewItemFuka}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $fuka_id) ));
+    $self->{Datas}{NewSkill}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $skill_id) ));
 
-    $self->{AllItemFuka}{$fuka_id} = [$self->{ResultNo}, $self->{GenerateNo}, $fuka_id];
+    $self->{AllSkill}{$skill_id} = [$self->{ResultNo}, $self->{GenerateNo}, $skill_id];
 
     return;
 }
@@ -114,8 +114,8 @@ sub Output{
     my $self = shift;
 
     # 新出データ判定用の既出情報の書き出し
-    foreach my $id (sort{$a cmp $b} keys %{ $self->{AllItemFuka} } ) {
-        $self->{Datas}{AllItemFuka}->AddData(join(ConstData::SPLIT, @{ $self->{AllItemFuka}{$id} }));
+    foreach my $id (sort{$a cmp $b} keys %{ $self->{AllSkill} } ) {
+        $self->{Datas}{AllSkill}->AddData(join(ConstData::SPLIT, @{ $self->{AllSkill}{$id} }));
     }
     
     foreach my $object( values %{ $self->{Datas} } ) {

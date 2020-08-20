@@ -53,6 +53,8 @@ sub Main {
     if (ConstData::EXE_NEW) {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM,         "new_items",       "./output/new/item_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM_FUKA,    "new_item_fukas",  "./output/new/item_fuka_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_EMBRYO,       "new_embryos",     "./output/new/embryo_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_SKILL,        "new_skills",      "./output/new/skill_");
     }
     if (ConstData::EXE_CHARA) {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,       "names",       "./output/chara/name_");
