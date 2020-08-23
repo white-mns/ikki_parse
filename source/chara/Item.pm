@@ -42,7 +42,8 @@ sub Init{
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     
     #初期化
-    $self->{Datas}{Data}        = StoreData->new();
+    $self->{Datas}{Item}        = StoreData->new();
+    $self->{Datas}{InitEquip}   = StoreData->new();
     $self->{Datas}{NewItem}     = NewItem->new();
     $self->{Datas}{NewItemFuka} = NewItemFuka->new();
 
@@ -67,10 +68,20 @@ sub Init{
                 "effect_3_value",
     ];
 
-    $self->{Datas}{Data}->Init($header_list);
+    $self->{Datas}{Item}->Init($header_list);
+
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "e_no",
+                "i_no",
+    ];
+
+    $self->{Datas}{InitEquip}->Init($header_list);
     
     #出力ファイル設定
-    $self->{Datas}{Data}->SetOutputName( "./output/chara/item_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Item}->SetOutputName     ( "./output/chara/item_"       . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{InitEquip}->SetOutputName( "./output/chara/init_equip_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     return;
 }
 
@@ -83,6 +94,7 @@ sub GetData{
     my $self    = shift;
     my $e_no    = shift;
     my $table_PD2_nodes = shift;
+    my $td_Y5i_node = shift;
     
     $self->{ENo} = $e_no;
 
@@ -91,6 +103,7 @@ sub GetData{
 
     if (!$item_title_node) {return;}
 
+    $self->CheckFirstDay($td_Y5i_node);
     $self->GetItemData($item_table_nodes);
     
     return;
@@ -126,13 +139,17 @@ sub GetItemData{
 
         }
 
-        $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $i_no, $name, $kind_id, $strength,
+        $self->{Datas}{Item}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $i_no, $name, $kind_id, $strength,
                                                               $$effects[0]{"id"}, $$effects[0]{"value"},
                                                               $$effects[1]{"id"}, $$effects[1]{"value"},
                                                               $$effects[2]{"id"}, $$effects[2]{"value"})));
     
         if ($$td_nodes[2]->as_text eq "材料") {
             $self->{Datas}{NewItem}->RecordNewItemData($name);
+        }
+
+        if ($$td_nodes[0]->as_text < 6 && $$td_nodes[1]->attr("class") && $$td_nodes[1]->attr("class") eq "R3" && $$td_nodes[2]->as_text ne "材料") {
+            $self->{Datas}{InitEquip}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $i_no)));
         }
     }
 
@@ -180,6 +197,21 @@ sub GetTitleNode{
     }
     return;
 }
+
+#-----------------------------------#
+#    初日かどうか取得
+#------------------------------------
+#    引数｜項目画像テーブルノード一覧
+#-----------------------------------#
+sub CheckFirstDay{
+    my $self  = shift;
+    my $td_Y5i_node = shift;
+
+    $self->{IsFirstDay} = ($td_Y5i_node->as_text =~ /キャラクターが登録されました/ || $td_Y5i_node->as_text =~ /一揆参戦 1日目！/) ? 1 : 0;
+
+    return;
+}
+
 
 #-----------------------------------#
 #    出力

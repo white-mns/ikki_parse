@@ -123,7 +123,8 @@ sub ParsePage{
     my $tree = HTML::TreeBuilder->new;
     $tree->parse($content);
 
-    my $link_data_nodes = &GetNode::GetNode_Tag_Attr("a", "name", "DATA",     \$tree);
+    my $link_data_nodes = &GetNode::GetNode_Tag_Attr("a",  "name",  "DATA", \$tree);
+    my $td_Y5i_nodes    = &GetNode::GetNode_Tag_Attr("td", "class", "Y5i",  \$tree);
     my $table_charachter_data_node = $$link_data_nodes[0]->parent->parent->parent->right->right->right;
     my $table_PD2_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "PD2", \$table_charachter_data_node);
 
@@ -132,7 +133,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Status}))     {$self->{DataHandlers}{Status}->GetData     ($e_no, $table_charachter_data_node)};
     if (exists($self->{DataHandlers}{Production})) {$self->{DataHandlers}{Production}->GetData ($e_no, $table_charachter_data_node)};
     if (exists($self->{DataHandlers}{Embryo}))     {$self->{DataHandlers}{Embryo}->GetData     ($e_no, $table_PD2_nodes)};
-    if (exists($self->{DataHandlers}{Item}))       {$self->{DataHandlers}{Item}->GetData       ($e_no, $table_PD2_nodes)};
+    if (exists($self->{DataHandlers}{Item}))       {$self->{DataHandlers}{Item}->GetData       ($e_no, $table_PD2_nodes, $$td_Y5i_nodes[0])};
 
     $tree = $tree->delete;
 }

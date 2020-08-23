@@ -63,6 +63,7 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,     "embryos",     "./output/chara/embryo_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_SKILL,      "skills",      "./output/chara/skill_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ITEM,       "items",       "./output/chara/item_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_INIT_EQUIP, "init_equips", "./output/chara/init_equip_");
     }
     if (ConstData::EXE_BATTLE) {
     }
