@@ -47,11 +47,13 @@ sub Init{
     $self->{DataHandlers}{ProperName} = StoreProperName->new();
     $self->{DataHandlers}{EmbryoName} = StoreProperName->new();
     $self->{DataHandlers}{SkillData}  = StoreProperData->new();
+    $self->{DataHandlers}{AreaData}   = StoreProperData->new();
 
     #他パッケージへの引き渡し用インスタンス
     $self->{CommonDatas}{ProperName} = $self->{DataHandlers}{ProperName};
     $self->{CommonDatas}{EmbryoName} = $self->{DataHandlers}{EmbryoName};
     $self->{CommonDatas}{SkillData}  = $self->{DataHandlers}{SkillData};
+    $self->{CommonDatas}{AreaData}   = $self->{DataHandlers}{AreaData};
 
     my $header_list = "";
     my $output_file = "";
@@ -85,6 +87,16 @@ sub Init{
     ];
     $output_file = "./output/data/". "skill_data" . ".csv";
     $self->{DataHandlers}{SkillData}->Init($header_list, $output_file, [" ", 0, 0, 0, 0, 0, 0]);
+
+    # エリア情報の初期化
+    $header_list = [
+                "area_id",
+                "name",
+                "level",
+    ];
+    $output_file = "./output/data/". "area_data" . ".csv";
+    $self->{DataHandlers}{AreaData}->Init($header_list, $output_file, [" ", 0]);
+
 
     return;
 }
