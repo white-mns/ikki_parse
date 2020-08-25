@@ -31,6 +31,8 @@ use warnings;
         use constant EXE_CHARA_ITEM              => 1;
         use constant EXE_CHARA_INIT_EQUIP        => 1;
         use constant EXE_CHARA_CURRENT_AREA      => 1;
+        use constant EXE_CHARA_PARTY             => 1;
+        use constant EXE_CHARA_PARTY_INFO        => 1;
     use constant EXE_NEW                  => 1;  
         use constant EXE_NEW_ITEM                => 1;
         use constant EXE_NEW_ITEM_FUKA           => 1;

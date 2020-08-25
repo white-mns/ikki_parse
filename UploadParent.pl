@@ -66,6 +66,8 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ITEM,         "items",          "./output/chara/item_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_INIT_EQUIP,   "init_equips",    "./output/chara/init_equip_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_CURRENT_AREA, "current_areas",  "./output/chara/current_area_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY,        "parties",        "./output/chara/party_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY_INFO,   "party_infos",    "./output/chara/party_info_");
     }
     if (ConstData::EXE_BATTLE) {
     }

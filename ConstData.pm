@@ -28,5 +28,6 @@ use warnings;
         use constant EXE_CHARA_EMBRYO         => 1;
         use constant EXE_CHARA_ITEM           => 1;
         use constant EXE_CHARA_CURRENT_AREA   => 1;
+        use constant EXE_CHARA_PARTY          => 1;
     use constant EXE_BATTLE         => 1;
 1;
