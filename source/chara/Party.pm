@@ -150,7 +150,7 @@ sub GetPartyInfo{
     
     my $link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[0]);
 
-    if ($self->{ENo} != &GetIkkiNode::GetENoFromLink($$link_nodes[0]) ) { return;} # 戦闘ENoの判定
+    if ($self->{ENo} != &GetIkkiNode::GetENoFromLink($$link_nodes[0]) ) {return;} # 戦闘ENoの判定
     
     # パーティ情報の取得
     my ($name, $member_num) = (0, 0);

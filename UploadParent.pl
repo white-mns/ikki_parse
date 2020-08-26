@@ -52,22 +52,26 @@ sub Main {
         &UploadData($upload, ConstData::EXE_DATA_AREA_DATA,       "area_data",       "./output/data/area_data.csv");
     }
     if (ConstData::EXE_NEW) {
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM,           "new_items",      "./output/new/item_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM_FUKA,      "new_item_fukas", "./output/new/item_fuka_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_EMBRYO,         "new_embryos",    "./output/new/embryo_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_SKILL,          "new_skills",     "./output/new/skill_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM,           "new_items",        "./output/new/item_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_ITEM_FUKA,      "new_item_fukas",   "./output/new/item_fuka_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_EMBRYO,         "new_embryos",      "./output/new/embryo_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_SKILL,          "new_skills",       "./output/new/skill_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_NEXT_ENEMY,     "new_next_enemies", "./output/new/next_enemy_");
     }
     if (ConstData::EXE_CHARA) {
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,         "names",          "./output/chara/name_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_STATUS,       "statuses",       "./output/chara/status_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRODUCTION,   "productions",    "./output/chara/production_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,       "embryos",        "./output/chara/embryo_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_SKILL,        "skills",         "./output/chara/skill_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ITEM,         "items",          "./output/chara/item_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_INIT_EQUIP,   "init_equips",    "./output/chara/init_equip_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_CURRENT_AREA, "current_areas",  "./output/chara/current_area_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY,        "parties",        "./output/chara/party_");
-        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY_INFO,   "party_infos",    "./output/chara/party_info_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,              "names",               "./output/chara/name_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_STATUS,            "statuses",            "./output/chara/status_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRODUCTION,        "productions",         "./output/chara/production_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_EMBRYO,            "embryos",             "./output/chara/embryo_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_SKILL,             "skills",              "./output/chara/skill_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ITEM,              "items",               "./output/chara/item_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_INIT_EQUIP,        "init_equips",         "./output/chara/init_equip_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_CURRENT_AREA,      "current_areas",       "./output/chara/current_area_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY,             "parties",             "./output/chara/party_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PARTY_INFO,        "party_infos",         "./output/chara/party_info_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NEXT_BATTLE_ENEMY, "next_battle_enemies", "./output/chara/next_battle_enemy_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NEXT_BATTLE_INFO,  "next_battle_infos",   "./output/chara/next_battle_info_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NEXT_DUEL_INFO,    "next_duel_infos",     "./output/chara/next_duel_info_");
     }
     if (ConstData::EXE_BATTLE) {
     }

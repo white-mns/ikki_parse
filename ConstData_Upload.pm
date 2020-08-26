@@ -33,11 +33,15 @@ use warnings;
         use constant EXE_CHARA_CURRENT_AREA      => 1;
         use constant EXE_CHARA_PARTY             => 1;
         use constant EXE_CHARA_PARTY_INFO        => 1;
+        use constant EXE_CHARA_NEXT_BATTLE_ENEMY => 1;
+        use constant EXE_CHARA_NEXT_BATTLE_INFO  => 1;
+        use constant EXE_CHARA_NEXT_DUEL_INFO    => 1;
     use constant EXE_NEW                  => 1;  
         use constant EXE_NEW_ITEM                => 1;
         use constant EXE_NEW_ITEM_FUKA           => 1;
         use constant EXE_NEW_EMBRYO              => 1;
         use constant EXE_NEW_SKILL               => 1;
+        use constant EXE_NEW_NEXT_ENEMY          => 1;
     use constant EXE_BATTLE               => 1;
     use constant EXE_NEW                  => 1;
 

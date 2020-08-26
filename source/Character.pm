@@ -24,6 +24,7 @@ require "./source/chara/Embryo.pm";
 require "./source/chara/Item.pm";
 require "./source/chara/CurrentArea.pm";
 require "./source/chara/Party.pm";
+require "./source/chara/NextBattle.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -62,6 +63,7 @@ sub Init{
     if (ConstData::EXE_CHARA_ITEM)         { $self->{DataHandlers}{Item}        = Item->new();}
     if (ConstData::EXE_CHARA_CURRENT_AREA) { $self->{DataHandlers}{CurrentArea} = CurrentArea->new();}
     if (ConstData::EXE_CHARA_PARTY)        { $self->{DataHandlers}{Party}       = Party->new();}
+    if (ConstData::EXE_CHARA_NEXT_BATTLE)  { $self->{DataHandlers}{NextBattle}  = NextBattle->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -143,6 +145,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Item}))        {$self->{DataHandlers}{Item}->GetData        ($e_no, $table_PD2_nodes, $$td_Y5i_nodes[0])};
     if (exists($self->{DataHandlers}{CurrentArea})) {$self->{DataHandlers}{CurrentArea}->GetData ($e_no, $b_G5_nodes)};
     if (exists($self->{DataHandlers}{Party}))       {$self->{DataHandlers}{Party}->GetData       ($e_no, $img_star_nodes)};
+    if (exists($self->{DataHandlers}{NextBattle}))  {$self->{DataHandlers}{NextBattle}->GetData  ($e_no, $img_star_nodes)};
 
     $tree = $tree->delete;
 }
