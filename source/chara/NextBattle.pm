@@ -114,7 +114,7 @@ sub GetData{
     $self->GetNextBattleEnemy($next_battle_table);
     $self->GetNextBattleInfo ($next_battle_table);
     
-    if ($self->CheckPartyHead($next_duel_table)) {
+    if ($self->CheckDuelHead($next_duel_table)) {
         $self->GetNextDuelInfo ($next_duel_table);
     }
 
@@ -246,15 +246,39 @@ sub CheckPartyHead{
 
     if (!$node) {return 0;}
 
-    my @td_nodes    = $node->content_list;
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
 
-    my $link_nodes = &GetNode::GetNode_Tag("a", \$td_nodes[0]);
+    my $link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[0]);
 
     # 先頭ENoの判定
     if ($self->{ENo} == &GetIkkiNode::GetENoFromLink($$link_nodes[0]) ) {return 1;}
 
     return 0;
 }
+
+#-----------------------------------#
+#    対人メンバー内で最も若いENoの時に正を返す
+#------------------------------------
+#    引数｜対戦組み合わせデータノード
+#-----------------------------------#
+sub CheckDuelHead{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return 0;}
+
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    my $left_link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[0]);
+    my $right_link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[2]);
+
+    # 先頭ENoの判定
+    if ($self->{ENo} != &GetIkkiNode::GetENoFromLink($$left_link_nodes[0]) ) {return 0;}
+    if ($self->{ENo} < &GetIkkiNode::GetENoFromLink($$right_link_nodes[0]) ) {return 1;}
+
+    return 0;
+}
+
 
 #-----------------------------------#
 #    出力
