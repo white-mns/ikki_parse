@@ -15,12 +15,23 @@ use source::lib::GetNode;
 #-----------------------------------#
 sub SearchTableNodeFromStarImg{
     my $nodes = shift;
-    my $title_text   = shift;
+    my $target_text   = shift;
+    my $position   = shift;
+    my $reference_text   = shift;
+
+    my $after_flag = ($position && $position eq "after") ? 0 : -1;
 
     foreach my $node (@$nodes) {
         my $parent_table_node = $node->parent->parent->parent;
         
-        if ($parent_table_node->as_text ne $title_text) {next;}
+        if ($position && $parent_table_node->as_text eq $reference_text) {
+            if    ($position eq "before") {return;}
+            elsif ($position eq "after")  {$after_flag = 1;}
+        }
+
+        if ($parent_table_node->as_text ne $target_text) {next;}
+
+        if ($after_flag == 0) {next;}
 
         my @parent_right_nodes = $parent_table_node->right;
 

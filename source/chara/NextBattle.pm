@@ -105,7 +105,7 @@ sub GetData{
     $self->{ENo} = $e_no;
     
     my $next_battle_table = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "Next Battle");
-    my $next_duel_table = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!");
+    my $next_duel_table =   &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!", "after", "Next Battle");
 
     if (!$self->CheckPartyHead($next_battle_table)) { return;}
     
