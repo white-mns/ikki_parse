@@ -36,6 +36,8 @@ use warnings;
         use constant EXE_CHARA_NEXT_BATTLE_ENEMY => 1;
         use constant EXE_CHARA_NEXT_BATTLE_INFO  => 1;
         use constant EXE_CHARA_NEXT_DUEL_INFO    => 1;
+        use constant EXE_CHARA_BATTLE_RESULT     => 1;
+        use constant EXE_CHARA_DUEL_RESULT       => 1;
     use constant EXE_NEW                  => 1;  
         use constant EXE_NEW_ITEM                => 1;
         use constant EXE_NEW_ITEM_FUKA           => 1;
