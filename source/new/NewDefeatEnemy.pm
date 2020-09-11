@@ -1,5 +1,5 @@
 #===================================================================
-#        初戦闘NPC取得パッケージ
+#        NPC初突破取得パッケージ
 #-------------------------------------------------------------------
 #            (C) 2019 @white_mns
 #===================================================================
@@ -17,7 +17,7 @@ use source::lib::GetNode;
 #------------------------------------------------------------------#
 #    パッケージの定義
 #------------------------------------------------------------------#     
-package NewBattleEnemy;
+package NewDefeatEnemy;
 
 #-----------------------------------#
 #    コンストラクタ
@@ -36,27 +36,32 @@ sub new {
 sub Init{
     my $self = shift;
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
+    ($self->{BeforeResultNo}, $self->{BeforeGenerateNo}) = ($self->{ResultNo} - 1, 0);
     
     #初期化
-    $self->{Datas}{NewBattleEnemy} = StoreData->new();
-    $self->{Datas}{AllBattleEnemy} = StoreData->new();
+    $self->{Datas}{NewDefeatEnemy} = StoreData->new();
+    $self->{Datas}{AllDefeatEnemy} = StoreData->new();
+    $self->{Datas}{BeforeDefeatEnemy} = StoreData->new();
     my $header_list = "";
    
     $header_list = [
                 "result_no",
                 "generate_no",
+                "before_result_no",
+                "before_generate_no",
+                "party_no",
                 "enemy_id",
+                "member_num",
                 "is_boss",
-                "area_id",
-                "advance",
     ];
 
-    $self->{Datas}{NewBattleEnemy}->Init($header_list);
-    $self->{Datas}{AllBattleEnemy}->Init($header_list);
+    $self->{Datas}{NewDefeatEnemy}->Init($header_list);
+    $self->{Datas}{AllDefeatEnemy}->Init($header_list);
+    $self->{Datas}{BeforeDefeatEnemy}->Init($header_list);
     
     #出力ファイル設定
-    $self->{Datas}{NewBattleEnemy}->SetOutputName( "./output/new/battle_enemy_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
-    $self->{Datas}{AllBattleEnemy}->SetOutputName( "./output/new/all_battle_enemy_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{NewDefeatEnemy}->SetOutputName( "./output/new/defeat_enemy_"     . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{AllDefeatEnemy}->SetOutputName( "./output/new/all_defeat_enemy_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     $self->ReadLastNewData();
 
@@ -70,7 +75,7 @@ sub ReadLastNewData(){
     my $self      = shift;
     
     my $file_name = "";
-    $file_name = "./output/new/all_battle_enemy_" . ($self->{ResultNo} - 1) . "_0.csv" ;
+    $file_name = "./output/new/all_defeat_enemy_" . ($self->{ResultNo} - 1) . "_0.csv" ;
     
     #既存データの読み込み
     my $content = &IO::FileRead ( $file_name );
@@ -79,11 +84,12 @@ sub ReadLastNewData(){
     shift (@file_data);
     
     foreach my  $data_set(@file_data){
-        my $new_battle_enemy_datas = [];
-        @$new_battle_enemy_datas   = split(ConstData::SPLIT, $data_set);
-        my $enemy_id = $$new_battle_enemy_datas[2];
-        if(!exists($self->{AllBattleEnemy}{$enemy_id})){
-            $self->{AllBattleEnemy}{$enemy_id} = [$self->{ResultNo}, $self->{GenerateNo}, $enemy_id];
+        my $new_defeat_enemy_datas = [];
+        @$new_defeat_enemy_datas   = split(ConstData::SPLIT, $data_set);
+        my $key = $$new_defeat_enemy_datas[2];
+        if(!exists($self->{AllDefeatEnemy}{$key})){
+            $self->{AllDefeatEnemy}{$key}    = [$self->{ResultNo}, $self->{GenerateNo}, $key];
+            $self->{BeforeDefeatEnemy}{$key} = [$self->{ResultNo}, $self->{GenerateNo}, $key];
         }
     }
 
@@ -91,22 +97,28 @@ sub ReadLastNewData(){
 }
 
 #-----------------------------------#
-#    初戦闘敵の判定と記録
+#    NPC初突破の判定と記録
 #------------------------------------
 #    引数｜固有名詞ID
 #-----------------------------------#
-sub RecordNewBattleEnemyData{
+sub RecordNewDefeatEnemyData{
     my $self    = shift;
     my $enemy_id = shift;
+    my $member_num  = shift;
     my $is_boss = shift;
     my $area_id  = shift;
     my $advance  = shift;
+    my $party_no  = shift;
 
-    if (exists($self->{AllBattleEnemy}{$enemy_id})) {return;}
+    my $key = $enemy_id . "_" . $member_num;
 
-    $self->{Datas}{NewBattleEnemy}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $enemy_id, $is_boss, $area_id, $advance) ));
+    if (exists($self->{BeforeDefeatEnemy}{$key})) {return;}
 
-    $self->{AllBattleEnemy}{$enemy_id} = [$self->{ResultNo}, $self->{GenerateNo}, $enemy_id];
+    $self->{Datas}{NewDefeatEnemy}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BeforeResultNo}, $self->{BeforeGenerateNo}, $party_no, $enemy_id, $member_num, $is_boss) ));
+
+    if (exists($self->{AllDefeatEnemy}{$key})) {return;}
+
+    $self->{AllDefeatEnemy}{$key} = [$self->{ResultNo}, $self->{GenerateNo}, $key];
 
     return;
 }
@@ -119,8 +131,8 @@ sub Output{
     my $self = shift;
 
     # 新出データ判定用の既出情報の書き出し
-    foreach my $id (sort{$a cmp $b} keys %{ $self->{AllBattleEnemy} } ) {
-        $self->{Datas}{AllBattleEnemy}->AddData(join(ConstData::SPLIT, @{ $self->{AllBattleEnemy}{$id} }));
+    foreach my $key (sort{$a cmp $b} keys %{ $self->{AllDefeatEnemy} } ) {
+        $self->{Datas}{AllDefeatEnemy}->AddData(join(ConstData::SPLIT, @{ $self->{AllDefeatEnemy}{$key} }));
     }
     
     foreach my $object( values %{ $self->{Datas} } ) {

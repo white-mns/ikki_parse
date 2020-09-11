@@ -44,7 +44,8 @@ use warnings;
         use constant EXE_NEW_EMBRYO              => 1;
         use constant EXE_NEW_SKILL               => 1;
         use constant EXE_NEW_NEXT_ENEMY          => 1;
-        use constant EXE_NEW_BATTLE_ENEMY          => 1;
+        use constant EXE_NEW_BATTLE_ENEMY        => 1;
+        use constant EXE_NEW_DEFEAT_ENEMY        => 1;
     use constant EXE_BATTLE               => 1;
     use constant EXE_NEW                  => 1;
 

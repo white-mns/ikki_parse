@@ -58,6 +58,7 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_SKILL,          "new_skills",         "./output/new/skill_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_NEXT_ENEMY,     "new_next_enemies",   "./output/new/next_enemy_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_BATTLE_ENEMY,   "new_battle_enemies", "./output/new/battle_enemy_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_NEW_DEFEAT_ENEMY,   "new_defeat_enemies", "./output/new/defeat_enemy_");
     }
     if (ConstData::EXE_CHARA) {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NAME,              "names",               "./output/chara/name_");

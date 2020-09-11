@@ -12,6 +12,7 @@ require "./source/lib/Store_Data.pm";
 require "./source/lib/Store_HashData.pm";
 
 require "./source/new/NewBattleEnemy.pm";
+require "./source/new/NewDefeatEnemy.pm";
 
 use ConstData;        #定数呼び出し
 use source::lib::GetNode;
@@ -42,11 +43,13 @@ sub Init{
     ($self->{BeforeResultNo}, $self->{BeforeGenerateNo}) = ($self->{ResultNo} - 1, 0);
     
     #初期化
-    $self->{Datas}{BattleResult}  = StoreData->new();
-    $self->{Datas}{DuelResult}  = StoreData->new();
-    $self->{Datas}{New}   = NewBattleEnemy->new();
+    $self->{Datas}{BattleResult}   = StoreData->new();
+    $self->{Datas}{DuelResult}     = StoreData->new();
+    $self->{Datas}{NewBattleEnemy} = NewBattleEnemy->new();
+    $self->{Datas}{NewDefeatEnemy} = NewDefeatEnemy->new();
     
-    $self->{Datas}{New}->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
+    $self->{Datas}{NewBattleEnemy}->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
+    $self->{Datas}{NewDefeatEnemy}->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
     
     my $header_list = "";
 
@@ -103,6 +106,7 @@ sub GetData{
     my $battle_result = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "before", "DUEL!!");
     my $duel_result   = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "after", "DUEL!!");
 
+    $self->{MemberNum} = $self->GetMemberNum($battle_table);
     $self->GetBattleEnemy($battle_table, $battle_result);
 
     $self->{Datas}{BattleResult}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BeforeResultNo}, $self->{BeforeGenerateNo}, $self->{PNo},    $battle_result) ));
@@ -143,7 +147,11 @@ sub GetBattleEnemy{
 
         my $area_id = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[0];
         my $advance = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[1];
-        $self->{Datas}{New}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
+
+        $self->{Datas}{NewBattleEnemy}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
+
+        $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, 0, $is_boss, $area_id, $advance, , $self->{PNo});
+        $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, $self->{MemberNum}, $is_boss, $area_id, $advance, , $self->{PNo});
     }
 
     return;
@@ -180,6 +188,37 @@ sub AddDuelResultData{
 
     return;
 }
+
+#-----------------------------------#
+#    パーティ人数を取得
+#------------------------------------
+#    引数｜対戦組み合わせデータノード
+#            0:今回戦闘
+#-----------------------------------#
+sub GetMemberNum{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return;}
+    
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    if (!scalar(@$td_nodes)) {return;}
+    
+    my $link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[0]);
+
+    if ($self->{ENo} != &GetIkkiNode::GetENoFromLink($$link_nodes[0]) ) {return 0;} # 戦闘ENoの判定
+    
+    # パーティ情報の取得
+    my ($member_num) = (0);
+    
+    my $u_nodes = &GetNode::GetNode_Tag("u", \$$td_nodes[0]);
+    
+    $member_num = int( scalar(@$link_nodes) );
+
+    return $member_num;
+}
+
 
 #-----------------------------------#
 #    パーティ内で最も若いENoの時に正を返す
