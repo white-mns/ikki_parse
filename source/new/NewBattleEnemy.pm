@@ -77,9 +77,9 @@ sub ReadLastNewData(){
     shift (@file_data);
     
     foreach my  $data_set(@file_data){
-        my $new_item_use_datas = []; 
-        @$new_item_use_datas   = split(ConstData::SPLIT, $data_set);
-        my $enemy_id = $$new_item_use_datas[2];
+        my $new_battle_enemy_datas = [];
+        @$new_battle_enemy_datas   = split(ConstData::SPLIT, $data_set);
+        my $enemy_id = $$new_battle_enemy_datas[2];
         if(!exists($self->{AllBattleEnemy}{$enemy_id})){
             $self->{AllBattleEnemy}{$enemy_id} = [$self->{ResultNo}, $self->{GenerateNo}, $enemy_id];
         }
