@@ -1,4 +1,4 @@
-result_no	generate_no	enemy_id	is_boss	
+result_no	generate_no	enemy_id	is_boss	area_id	advance	
 2	0	100
 2	0	101
 2	0	102

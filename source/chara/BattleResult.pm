@@ -141,7 +141,9 @@ sub GetBattleEnemy{
     foreach my $i_node (@$i_nodes) {
         my $enemy_id = $self->{CommonDatas}{ProperName}->GetOrAddId($i_node->as_text);
 
-        $self->{Datas}{New}->RecordNewBattleEnemyData($enemy_id, $is_boss);
+        my $area_id = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[0];
+        my $advance = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[1];
+        $self->{Datas}{New}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
     }
 
     return;

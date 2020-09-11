@@ -36,6 +36,8 @@ sub new {
 sub Init{
     my $self = shift;
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
+    $self->{CommonDatas}{CurrentArea} = {};
+    $self->{CommonDatas}{BeforeCurrentArea} = {};
     
     #初期化
     $self->{Datas}{Data}  = StoreData->new();
@@ -51,12 +53,41 @@ sub Init{
     ];
 
     $self->{Datas}{Data}->Init($header_list);
-    
+
     #出力ファイル設定
     $self->{Datas}{Data}->SetOutputName( "./output/chara/current_area_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+
+    $self->ReadLastNewData();
+
     return;
 }
 
+#-----------------------------------#
+#    既存データを読み込む
+#-----------------------------------#
+sub ReadLastNewData(){
+    my $self      = shift;
+
+    my $file_name = "";
+    $file_name = "./output/chara/current_area_" . ($self->{ResultNo} - 1) . "_0.csv" ;
+
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+
+    foreach my  $data_set(@file_data){
+        my $current_area_datas = [];
+        @$current_area_datas   = split(ConstData::SPLIT, $data_set);
+        my $e_no = $$current_area_datas[2];
+        if(!exists($self->{CommonDatas}{BeforeCurrentArea}{$e_no})){
+            $self->{CommonDatas}{BeforeCurrentArea}{$e_no} = [$$current_area_datas[3], $$current_area_datas[4]];
+        }
+    }
+
+    return;
+}
 #-----------------------------------#
 #    データ取得
 #------------------------------------
@@ -69,10 +100,15 @@ sub GetData{
     
     $self->{ENo} = $e_no;
 
-    $self->GetCurrentAreaData($b_G5_nodes);
+    if ($self->{ResultNo} > 0) {
+        $self->GetCurrentAreaData($b_G5_nodes);
+    } else {
+        $self->SetResult0CurrentAreaData($b_G5_nodes);
+    }
     
     return;
 }
+
 #-----------------------------------#
 #    現在地データ取得
 #------------------------------------
@@ -106,11 +142,28 @@ sub GetCurrentAreaData{
         if ($node->right->as_text =~ /好戦度\+(\d+?)/) { $bellicosity = $1}
 
         $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $area_id, $advance, $bellicosity) ));
+        $self->{CommonDatas}{CurrentArea}{$self->{ENo}} = [$area_id, $advance];
     }
-
 
     return;
 }
+
+#-----------------------------------#
+#    第0回に王城前データを固定で記録
+#------------------------------------
+#    引数｜キャラクターデータノード
+#-----------------------------------#
+sub SetResult0CurrentAreaData{
+    my $self  = shift;
+
+    my $area_id = $self->{CommonDatas}{AreaData}->GetOrAddId(0, ["王城前", 0]);
+
+    $self->{Datas}{Data}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $area_id, 0, 0) ));
+    $self->{CommonDatas}{CurrentArea}{$self->{ENo}} = [$area_id, 0];
+
+    return;
+}
+
 
 #-----------------------------------#
 #    出力

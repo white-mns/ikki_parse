@@ -150,8 +150,10 @@ sub GetNextBattleEnemy{
         my $enemy_id = $self->{CommonDatas}{ProperName}->GetOrAddId($i_node->as_text);
 
         $self->{Datas}{NextBattleEnemy}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{PNo}, $is_boss, $enemy_id) ));
-    
-        $self->{Datas}{New}->RecordNewNextEnemyData($enemy_id, $is_boss);
+
+        my $area_id = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[0];
+        my $advance = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[1];
+        $self->{Datas}{New}->RecordNewNextEnemyData($enemy_id, $is_boss, $area_id, $advance);
     }
 
     return;
