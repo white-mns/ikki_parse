@@ -87,7 +87,7 @@ sub Init{
 #-----------------------------------#
 #    データ取得
 #------------------------------------
-#    引数｜戦闘管理番号,PT番号,戦闘番号,戦闘開始時・Result表記divノード
+#    引数｜項目名の前にある星画像ノード
 #-----------------------------------#
 sub GetData{
     my $self = shift;
@@ -120,9 +120,7 @@ sub GetData{
 #    パーティ内で最も若いENoをパーティ番号として戦闘予告取得
 #------------------------------------
 #    引数｜対戦組み合わせデータノード
-#          戦闘タイプ 
-#            0:『遭遇戦』『採集』
-#            1:『開放戦』『特殊戦』
+#          勝敗
 #-----------------------------------#
 sub GetBattleEnemy{
     my $self = shift;
@@ -158,42 +156,10 @@ sub GetBattleEnemy{
 }
 
 #-----------------------------------#
-#    戦闘が特殊戦か判定する
-#------------------------------------
-#    引数｜対戦組み合わせデータノード
-#-----------------------------------#
-sub CheckBossBattle{
-    my $self = shift;
-    my $node = shift;
-
-    if (!$node) {return;}
-
-    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
-
-    if (!scalar(@$td_nodes)) {return;}
-
-    my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
-
-    if ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") {return 1;}
-
-    my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
-
-    my @boss_names = ("兵士");
-
-    foreach my $boss_name (@boss_names) {
-        if ($$i_nodes[0]->as_text eq $boss_name) {return 1;}
-    } 
-
-    return 0;
-}
-
-#-----------------------------------#
 #    左側で最も若いENoの時、対人戦情報を取得
 #------------------------------------
 #    引数｜対戦組み合わせデータノード
-#          戦闘タイプ 
-#            10:決闘
-#            11:練習試合
+#          勝敗
 #-----------------------------------#
 sub AddDuelResultData{
     my $self = shift;
@@ -201,6 +167,8 @@ sub AddDuelResultData{
     my $duel_result = shift;
 
     if (!$node) {return;}
+
+    if (!$self->CheckDuelHead($node)) {return;}
 
     my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
 
@@ -290,6 +258,36 @@ sub CheckDuelHead{
     # 先頭ENoの判定
     if ($self->{ENo} != &GetIkkiNode::GetENoFromLink($$left_link_nodes[0]) ) {return 0;}
     if ($self->{ENo} < &GetIkkiNode::GetENoFromLink($$right_link_nodes[0]) ) {return 1;}
+
+    return 0;
+}
+
+#-----------------------------------#
+#    戦闘が特殊戦か判定する
+#------------------------------------
+#    引数｜対戦組み合わせデータノード
+#-----------------------------------#
+sub CheckBossBattle{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return;}
+
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    if (!scalar(@$td_nodes)) {return;}
+
+    my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
+
+    if ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") {return 1;}
+
+    my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
+
+    my @boss_names = ("兵士");
+
+    foreach my $boss_name (@boss_names) {
+        if ($$i_nodes[0]->as_text eq $boss_name) {return 1;}
+    }
 
     return 0;
 }

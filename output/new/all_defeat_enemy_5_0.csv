@@ -128,7 +128,6 @@ result_no	generate_no	before_result_no	before_generate_no	party_no	enemy_id	memb
 5	0	136_1
 5	0	139_0
 5	0	139_1
-5	0	139_2
 5	0	139_4
 5	0	140_0
 5	0	140_1
@@ -148,7 +147,6 @@ result_no	generate_no	before_result_no	before_generate_no	party_no	enemy_id	memb
 5	0	144_4
 5	0	152_0
 5	0	152_1
-5	0	152_2
 5	0	154_0
 5	0	154_3
 5	0	154_4
@@ -159,10 +157,6 @@ result_no	generate_no	before_result_no	before_generate_no	party_no	enemy_id	memb
 5	0	156_3
 5	0	158_0
 5	0	158_4
-5	0	164_0
-5	0	164_2
-5	0	165_0
-5	0	165_2
 5	0	94_0
 5	0	94_1
 5	0	94_2
