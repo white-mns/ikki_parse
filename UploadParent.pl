@@ -76,6 +76,7 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_NEXT_DUEL_INFO,    "next_duel_infos",     "./output/chara/next_duel_info_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_BATTLE_RESULT,     "battle_results",      "./output/chara/battle_result_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_DUEL_RESULT,       "duel_results",        "./output/chara/duel_result_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PK_DATA,           "pk_data",             "./output/chara/pk_");
     }
     if (ConstData::EXE_BATTLE) {
     }

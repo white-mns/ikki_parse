@@ -107,13 +107,15 @@ sub GetData{
     my $next_battle_table = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "Next Battle");
     my $next_duel_table =   &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!", "after", "Next Battle");
 
+    $self->{CommonDatas}{PKData}->GetPKAnnounceData($next_duel_table, $e_no);
+
     if (!$self->CheckPartyHead($next_battle_table)) { return;}
     
     $self->{PNo} = $e_no;
 
     $self->GetNextBattleEnemy($next_battle_table);
     $self->GetNextBattleInfo ($next_battle_table);
-    
+
     if ($self->CheckDuelHead($next_duel_table)) {
         $self->GetNextDuelInfo ($next_duel_table);
     }
@@ -226,9 +228,9 @@ sub GetNextDuelInfo{
     my $left_party_no  = &GetIkkiNode::GetENoFromLink($$left_link_nodes[0]);
     my $right_party_no = &GetIkkiNode::GetENoFromLink($$right_link_nodes[0]);
 
-    my $b_R5i_nodes = &GetNode::GetNode_Tag_Attr("b", "class", "R5i", \$node->parent);
+    my $b_W6i_nodes = &GetNode::GetNode_Tag_Attr("b", "class", "W6i", \$node->parent);
 
-    my $battle_type = ($$b_R5i_nodes[0] && $$b_R5i_nodes->as_text =~ /デュエル/) ? 1 : 0;
+    my $battle_type = (scalar(@$b_W6i_nodes)) ? 0 : 1;
 
     $self->{Datas}{NextDuelInfo}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $left_party_no, $right_party_no, $battle_type) ));
 

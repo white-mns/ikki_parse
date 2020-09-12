@@ -26,6 +26,7 @@ require "./source/chara/CurrentArea.pm";
 require "./source/chara/Party.pm";
 require "./source/chara/NextBattle.pm";
 require "./source/chara/BattleResult.pm";
+require "./source/chara/PKData.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -71,6 +72,9 @@ sub Init{
     foreach my $object( values %{ $self->{DataHandlers} } ) {
         $object->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
     }
+
+    $self->{CommonDatas}{PKData} = PKData->new();
+    $self->{CommonDatas}{PKData}->Init($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas});
     
     return;
 }
@@ -189,6 +193,8 @@ sub Output{
     foreach my $object( values %{ $self->{DataHandlers} } ) {
         $object->Output();
     }
+
+    $self->{CommonDatas}{PKData}->Output();
 
     return;
 }
