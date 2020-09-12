@@ -142,7 +142,7 @@ sub GetNextBattleEnemy{
 
     my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
 
-    my $is_boss = ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") ? 1 : 0;
+    my $is_boss = $self->CheckBossBattle($node);
     
     my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
 
@@ -180,10 +180,9 @@ sub GetNextBattleInfo{
     # パーティ情報の取得
     my ($name_id, $member_num) = (0, 0);
 
+    my $is_boss = $self->CheckBossBattle($node);
+
     my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
-
-    my $is_boss = ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") ? 1 : 0;
-
     my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
 
     $name_id = $self->{CommonDatas}{ProperName}->GetOrAddId($$u_R5i_nodes[0]->as_text);
@@ -236,7 +235,6 @@ sub GetNextDuelInfo{
     return;
 }
 
-
 #-----------------------------------#
 #    パーティ内で最も若いENoの時に正を返す
 #------------------------------------
@@ -281,6 +279,35 @@ sub CheckDuelHead{
     return 0;
 }
 
+#-----------------------------------#
+#    戦闘が特殊戦か判定する
+#------------------------------------
+#    引数｜対戦組み合わせデータノード
+#-----------------------------------#
+sub CheckBossBattle{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return;}
+
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    if (!scalar(@$td_nodes)) {return;}
+
+    my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
+
+    if ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") {return 1;}
+
+    my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
+
+    my @boss_names = ("兵士");
+
+    foreach my $boss_name (@boss_names) {
+        if ($$i_nodes[0]->as_text eq $boss_name) {return 1;}
+    } 
+
+    return 0;
+}
 
 #-----------------------------------#
 #    出力

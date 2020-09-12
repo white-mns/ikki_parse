@@ -136,9 +136,7 @@ sub GetBattleEnemy{
 
     if (!scalar(@$td_nodes)) {return;}
 
-    my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
-
-    my $is_boss = ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") ? 1 : 0;
+    my $is_boss = $self->CheckBossBattle($node);
     
     my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
 
@@ -148,13 +146,45 @@ sub GetBattleEnemy{
         my $area_id = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[0];
         my $advance = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[1];
 
-        $self->{Datas}{NewBattleEnemy}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
+        if ($battle_result == 1) {
+            $self->{Datas}{NewBattleEnemy}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
 
-        $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, 0, $is_boss, $area_id, $advance, , $self->{PNo});
-        $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, $self->{MemberNum}, $is_boss, $area_id, $advance, , $self->{PNo});
+            $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, 0, $is_boss, $area_id, $advance, , $self->{PNo});
+            $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, $self->{MemberNum}, $is_boss, $area_id, $advance, , $self->{PNo});
+        }
     }
 
     return;
+}
+
+#-----------------------------------#
+#    戦闘が特殊戦か判定する
+#------------------------------------
+#    引数｜対戦組み合わせデータノード
+#-----------------------------------#
+sub CheckBossBattle{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return;}
+
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    if (!scalar(@$td_nodes)) {return;}
+
+    my $u_R5i_nodes = &GetNode::GetNode_Tag_Attr("u", "class", "R5i", \$node);
+
+    if ($$u_R5i_nodes[0] && $$u_R5i_nodes[0]->as_text ne "Encounter") {return 1;}
+
+    my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
+
+    my @boss_names = ("兵士");
+
+    foreach my $boss_name (@boss_names) {
+        if ($$i_nodes[0]->as_text eq $boss_name) {return 1;}
+    } 
+
+    return 0;
 }
 
 #-----------------------------------#
