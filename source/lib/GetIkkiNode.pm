@@ -85,8 +85,10 @@ sub GetBattleResultFromStarImg{
 sub SearchMatchingTableNodeFromStarImg{
     my $nodes = shift;
     my $title_text   = shift;
+    my $position   = shift;
+    my $reference_text   = shift;
 
-    my $table_node = &SearchTableNodeFromStarImg($nodes, $title_text);
+    my $table_node = &SearchTableNodeFromStarImg($nodes, $title_text, $position, $reference_text);
 
     if (!$table_node) {return;}
 
