@@ -1,7 +1,7 @@
 #===================================================================
 #        戦闘勝敗解析パッケージ
 #-------------------------------------------------------------------
-#            (C) 2019 @white_mns
+#            (C) 2020 @white_mns
 #===================================================================
 
 
@@ -99,13 +99,15 @@ sub GetData{
     my $battle_table = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "Battle!!");
     my $duel_table =   &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!", "before", "Next Battle");
 
-    if (!$self->CheckPartyHead($battle_table)) { return;}
-    
     $self->{PNo} = $e_no;
     
     my $battle_result = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "before", "DUEL!!");
     my $duel_result   = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "after", "DUEL!!");
 
+    $self->{CommonDatas}{PKData}->GetPKResultData($e_no, $duel_result);
+
+    if (!$self->CheckPartyHead($battle_table)) { return;}
+    
     $self->{MemberNum} = $self->GetMemberNum($battle_table);
     $self->GetBattleEnemy($battle_table, $battle_result);
 

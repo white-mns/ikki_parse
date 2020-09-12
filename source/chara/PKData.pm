@@ -44,6 +44,7 @@ sub Init{
     
     #初期化
     $self->{Datas}{PKData}   = StoreData->new();
+    $self->{Datas}{Assault}   = StoreData->new();
     
     my $header_list = "";
 
@@ -61,18 +62,30 @@ sub Init{
 
     $self->{Datas}{PKData}->Init($header_list);
 
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "e_no",
+                "assault_type",
+    ];
+
+    $self->{Datas}{Assault}->Init($header_list);
+
+
     #出力ファイル設定
     $self->{Datas}{PKData}->SetOutputName ( "./output/chara/pk_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{Assault}->SetOutputName ( "./output/chara/assault_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
-    $self->ReadLastData();
+    $self->ReadBeforePKData();
+    $self->ReadBeforeAssaultData();
 
     return;
 }
 
 #-----------------------------------#
-#    既存データを読み込む
+#    前回のPKデータを読み込む
 #-----------------------------------#
-sub ReadLastData(){
+sub ReadBeforePKData(){
     my $self      = shift;
     
     my $file_name = "";
@@ -95,9 +108,35 @@ sub ReadLastData(){
 }
 
 #-----------------------------------#
-#    データ取得
+#    前回の襲撃データを読み込む
+#-----------------------------------#
+sub ReadBeforeAssaultData(){
+    my $self      = shift;
+    
+    my $file_name = "";
+    $file_name = "./output/chara/assault_" . ($self->{ResultNo} - 1) . "_0.csv" ;
+    
+    #既存データの読み込み
+    my $content = &IO::FileRead ( $file_name );
+    
+    my @file_data = split(/\n/, $content);
+    shift (@file_data);
+    
+    foreach my  $data_set(@file_data){
+        my $assault_datas = [];
+        @$assault_datas   = split(ConstData::SPLIT, $data_set);
+        my $e_no = $$assault_datas[2];
+        $self->{BeforeAssault}{$e_no} = $$assault_datas[3];
+    }
+
+    return;
+}
+
+#-----------------------------------#
+#    予告データ取得
 #------------------------------------
-#    引数｜項目名の前にある星画像ノード
+#    引数｜デュエル予告TABLEノード
+#          ENo
 #-----------------------------------#
 sub GetPKAnnounceData{
     my $self = shift;
@@ -115,18 +154,19 @@ sub GetPKAnnounceData{
 
     if (!scalar(@$b_Y6i_nodes) && !scalar(@$b_R6i_nodes)) {return;}
 
+    my $pk = $self->GetAssaultType($node, $e_no, scalar(@$b_Y6i_nodes), scalar(@$b_R6i_nodes));
+
     if (!scalar(@$b_Y6i_nodes)) {return;}
-    my $pk = $self->CheckEnemyPKer($node);
 
     if (!exists($self->{PKData}{$e_no})) {
         $self->{PKData}{$e_no} = [0, 0, 0, 0, 0, 0];
     }
 
-    if ($pk == 1) {
+    if ($pk < 5) {
         $self->{PKData}{$e_no}[0] += 1;
         $self->{PKData}{$e_no}[2] = $self->{ResultNo};
 
-    } else {
+    } elsif ($pk == 5) {
         $self->{PKData}{$e_no}[3] += 1;
         $self->{PKData}{$e_no}[5] = $self->{ResultNo};
     }
@@ -135,9 +175,93 @@ sub GetPKAnnounceData{
 }
 
 #-----------------------------------#
-#    対人メンバー内で最も若いENoの時に正を返す
+#    デュエル結果データ取得
 #------------------------------------
-#    引数｜対戦組み合わせデータノード
+#    引数｜デュエル開始TABLEノード
+#          ENo
+#          デュエル勝敗
+#-----------------------------------#
+sub GetPKResultData{
+    my $self = shift;
+    my $e_no = shift;
+    my $duel_result = shift;
+
+    if ($duel_result != 1) {return;}
+
+    return;
+
+    if (!exists($self->{BeforeAssault}{$e_no})) { return;}
+
+    my $pk = $self->{BeforeAssault}{$e_no};
+
+    if ($pk < 5) {
+        $self->{PKData}{$e_no}[1] += 1;
+
+    } elsif ($pk == 5) {
+        $self->{PKData}{$e_no}[4] += 1;
+    }
+
+    return;
+}
+
+#-----------------------------------#
+#    襲撃データ取得
+#------------------------------------
+#    引数｜デュエル予告TABLEノード
+#          ENo
+#          襲撃テキストノード数(0 or 1)
+#          非襲撃テキストノード数(0 or 1)
+#    引数｜1 : PK襲撃
+#          2 : PKvsPK襲撃
+#          3 : PKK被襲撃
+#          4 : PKvsPK被襲撃
+#          5 : PKK襲撃
+#          6 : PK被襲撃
+#-----------------------------------#
+sub GetAssaultType{
+    my $self = shift;
+    my $node = shift;
+    my $e_no = shift;
+    my $assault = shift;
+    my $assaulted = shift;
+
+    my $assault_type = 1;
+    my $enemy_pker = $self->CheckEnemyPKer($node);
+
+    if ($assault) {
+        if ($enemy_pker) {
+           if (exists($self->{PKData}{$e_no}) && $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、PKKとして判定
+               $assault_type = 5;
+
+           } else {
+               $assault_type = 2;
+           }
+       } else {
+          $assault_type = 1;
+       }
+
+    } elsif($assaulted) {
+        if (!exists($self->{PKData}{$e_no}) || $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、被害者として判定
+            $assault_type = 6;
+        } else {
+            if ($enemy_pker) { $assault_type = 4;}
+            else             { $assault_type = 3;}
+        }
+
+    } else {
+        return;
+    }
+    
+    $self->{Datas}{Assault}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $assault_type) ));
+
+    return $assault_type;
+}
+
+
+#-----------------------------------#
+#    デュエル相手にPKがいる時に正を返す
+#------------------------------------
+#    引数｜デュエル予告TABLEノード
 #-----------------------------------#
 sub CheckEnemyPKer{
     my $self = shift;
