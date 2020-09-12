@@ -27,6 +27,7 @@ require "./source/chara/Party.pm";
 require "./source/chara/NextBattle.pm";
 require "./source/chara/BattleResult.pm";
 require "./source/chara/PKData.pm";
+require "./source/chara/Prize.pm";
 
 use ConstData;        #定数呼び出し
 
@@ -67,6 +68,7 @@ sub Init{
     if (ConstData::EXE_CHARA_PARTY)         { $self->{DataHandlers}{Party}        = Party->new();}
     if (ConstData::EXE_CHARA_NEXT_BATTLE)   { $self->{DataHandlers}{NextBattle}   = NextBattle->new();}
     if (ConstData::EXE_CHARA_BATTLE_RESULT) { $self->{DataHandlers}{BattleResult} = BattleResult->new();}
+    if (ConstData::EXE_CHARA_PRIZE)         { $self->{DataHandlers}{Prize}        = Prize->new();}
 
     #初期化処理
     foreach my $object( values %{ $self->{DataHandlers} } ) {
@@ -153,6 +155,7 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Party}))        {$self->{DataHandlers}{Party}->GetData        ($e_no, $img_star_nodes)};
     if (exists($self->{DataHandlers}{NextBattle}))   {$self->{DataHandlers}{NextBattle}->GetData   ($e_no, $img_star_nodes)};
     if (exists($self->{DataHandlers}{BattleResult})) {$self->{DataHandlers}{BattleResult}->GetData ($e_no, $img_star_nodes)};
+    if (exists($self->{DataHandlers}{Prize}))        {$self->{DataHandlers}{Prize}->GetData        ($e_no, $table_charachter_data_node)};
 
     $tree = $tree->delete;
 }

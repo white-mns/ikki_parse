@@ -276,7 +276,7 @@ sub CheckEnemyPKer{
     # 先頭ENoの判定
     foreach my $right_link_node (@$right_link_nodes) {
         my $e_no = &GetIkkiNode::GetENoFromLink($right_link_node);
-        if (exists($self->{PKData}{$e_no}) && $self->{PKData}{$e_no}[0]) {return 1;}
+        if (exists($self->{CommonDatas}{Prize}{$e_no}) && $self->{CommonDatas}{Prize}{$e_no} > 0) {return 1;}
     }
 
     return 0;
