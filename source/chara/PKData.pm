@@ -230,7 +230,7 @@ sub GetAssaultType{
 
     if ($assault) {
         if ($enemy_pker) {
-           if (exists($self->{PKData}{$e_no}) && $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、PKKとして判定
+           if (!exists($self->{PKData}{$e_no}) || $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、PKKとして判定
                $assault_type = 5;
 
            } else {
