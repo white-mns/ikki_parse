@@ -106,16 +106,27 @@ sub Execute{
 
     print "$directory\n";
 
-    print "$start to $end\n";
+    print "1: $start to $end\n";
 
     for (my $e_no=$start; $e_no<=$end; $e_no++) {
         if ($e_no % 10 == 0) {print $e_no . "\n"};
 
         $self->ParsePage($directory."/k".$e_no.".html",$e_no);
     }
+
+    print "2: $start to $end\n";
+
+    if (exists($self->{DataHandlers}{NextBattle}) || exists($self->{DataHandlers}{BattleResult})) {
+        for (my $e_no=$start; $e_no<=$end; $e_no++) {
+            if ($e_no % 10 == 0) {print $e_no . "\n"};
+
+            $self->ParsePage2($directory."/k".$e_no.".html",$e_no);
+        }
+    }
     
     return ;
 }
+
 #-----------------------------------#
 #       ファイルを解析
 #-----------------------------------#
@@ -153,9 +164,37 @@ sub ParsePage{
     if (exists($self->{DataHandlers}{Item}))         {$self->{DataHandlers}{Item}->GetData         ($e_no, $table_PD2_nodes, $$td_Y5i_nodes[0])};
     if (exists($self->{DataHandlers}{CurrentArea}))  {$self->{DataHandlers}{CurrentArea}->GetData  ($e_no, $b_G5_nodes)};
     if (exists($self->{DataHandlers}{Party}))        {$self->{DataHandlers}{Party}->GetData        ($e_no, $img_star_nodes)};
+    if (exists($self->{DataHandlers}{Prize}))        {$self->{DataHandlers}{Prize}->GetData        ($e_no, $table_charachter_data_node)};
+
+    $tree = $tree->delete;
+}
+
+#-----------------------------------#
+#       ファイルを解析(全賞金取得後、PKが関わるデータを二周目で取得)
+#-----------------------------------#
+#    引数｜ファイル名
+#    　　　ENo
+##-----------------------------------#
+sub ParsePage2{
+    my $self      = shift;
+    my $file_name = shift;
+    my $e_no      = shift;
+
+    #結果の読み込み
+    my $content = "";
+    $content = &IO::FileRead($file_name);
+
+    if (!$content) { return;}
+
+    #スクレイピング準備
+    my $tree = HTML::TreeBuilder->new;
+    $tree->parse($content);
+
+    my $img_star_nodes  = &GetNode::GetNode_Tag_Attr("img","src",   "../p/star.jpg", \$tree);
+
+    # データリスト取得
     if (exists($self->{DataHandlers}{NextBattle}))   {$self->{DataHandlers}{NextBattle}->GetData   ($e_no, $img_star_nodes)};
     if (exists($self->{DataHandlers}{BattleResult})) {$self->{DataHandlers}{BattleResult}->GetData ($e_no, $img_star_nodes)};
-    if (exists($self->{DataHandlers}{Prize}))        {$self->{DataHandlers}{Prize}->GetData        ($e_no, $table_charachter_data_node)};
 
     $tree = $tree->delete;
 }
