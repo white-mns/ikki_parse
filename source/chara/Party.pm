@@ -87,6 +87,8 @@ sub GetData{
 
     my $battle_table      = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "Battle!!");
     my $next_battle_table = &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "Next Battle");
+    my $duel_table =   &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!", "before", "Next Battle");
+    my $next_duel_table =   &GetIkkiNode::SearchMatchingTableNodeFromStarImg($nodes, "DUEL!!", "after", "Next Battle");
 
     $self->{CommonDatas}{Party}{$self->{ENo}} = $self->{ENo};
 
@@ -95,7 +97,13 @@ sub GetData{
 
     $self->GetParty    ($next_battle_table,  1);
     $self->GetPartyInfo($next_battle_table,  1);
-    
+ 
+    $self->GetParty    ($duel_table, 10);
+    $self->GetPartyInfo($duel_table, 10);
+ 
+    $self->GetParty    ($next_duel_table, 11);
+    $self->GetPartyInfo($next_duel_table, 11);
+   
     return;
 }
 

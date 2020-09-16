@@ -153,6 +153,8 @@ sub ParsePage{
     my $b_G5_nodes      = &GetNode::GetNode_Tag_Attr("b",  "class", "G5",   \$tree);
     my $img_star_nodes  = &GetNode::GetNode_Tag_Attr("img","src",   "../p/star.jpg", \$tree);
 
+    if (!scalar(@$link_data_nodes)) {return;}
+
     my $table_charachter_data_node = $$link_data_nodes[0]->parent->parent->parent->right->right->right;
     my $table_PD2_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "PD2", \$table_charachter_data_node);
 

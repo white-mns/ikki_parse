@@ -104,7 +104,7 @@ sub GetData{
     my $battle_result = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "before", "DUEL!!");
     my $duel_result   = &GetIkkiNode::GetBattleResultFromStarImg($nodes, "after", "DUEL!!");
 
-    $self->{CommonDatas}{PKData}->GetPKResultData($e_no, $duel_result);
+    $self->{CommonDatas}{PKData}->GetPKResultData($duel_table, $e_no, $duel_result);
 
     if (!$self->CheckPartyHead($battle_table)) { return;}
     

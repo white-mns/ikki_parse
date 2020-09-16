@@ -44,7 +44,8 @@ sub Init{
     
     #初期化
     $self->{Datas}{PKData}   = StoreData->new();
-    $self->{Datas}{Assault}   = StoreData->new();
+    $self->{Datas}{Assault}  = StoreData->new();
+    $self->{Datas}{PKResult} = StoreData->new();
     
     my $header_list = "";
 
@@ -71,10 +72,19 @@ sub Init{
 
     $self->{Datas}{Assault}->Init($header_list);
 
+    $header_list = [
+                "result_no",
+                "generate_no",
+                "e_no",
+                "battle_result",
+    ];
+
+    $self->{Datas}{PKResult}->Init($header_list);
 
     #出力ファイル設定
     $self->{Datas}{PKData}->SetOutputName ( "./output/chara/pk_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     $self->{Datas}{Assault}->SetOutputName ( "./output/chara/assault_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
+    $self->{Datas}{PKResult}->SetOutputName ( "./output/chara/pk_result_" . $self->{ResultNo} . "_" . $self->{GenerateNo} . ".csv" );
     
     $self->ReadBeforePKData();
     $self->ReadBeforeAssaultData();
@@ -183,18 +193,25 @@ sub GetPKAnnounceData{
 #-----------------------------------#
 sub GetPKResultData{
     my $self = shift;
+    my $node = shift;
     my $e_no = shift;
     my $duel_result = shift;
 
-    if ($duel_result != 1) {return;}
+    if (!$node) {return;}
 
-    return;
+    my $b_W6i_nodes = &GetNode::GetNode_Tag_Attr("b", "class", "W6i", \$node->parent);
+
+    if (scalar(@$b_W6i_nodes)) {return;}
+    
+    $self->{Datas}{PKResult}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $e_no, $duel_result) ));
+
+    if ($duel_result != 1) {return;}
 
     if (!exists($self->{BeforeAssault}{$e_no})) { return;}
 
     my $pk = $self->{BeforeAssault}{$e_no};
 
-    if ($pk < 5) {
+    if ($pk < 3) {
         $self->{PKData}{$e_no}[1] += 1;
 
     } elsif ($pk == 5) {
@@ -227,10 +244,11 @@ sub GetAssaultType{
 
     my $assault_type = 1;
     my $enemy_pker = $self->CheckEnemyPKer($node);
+    my $enemy_wanted = $self->CheckEnemyWanted($node);
 
     if ($assault) {
-        if ($enemy_pker) {
-           if (!exists($self->{PKData}{$e_no}) || $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、PKKとして判定
+        if ($enemy_wanted) {
+           if (!exists($self->{PKData}{$e_no}) || $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象が賞金首のとき、PKKとして判定
                $assault_type = 5;
 
            } else {
@@ -241,7 +259,7 @@ sub GetAssaultType{
        }
 
     } elsif($assaulted) {
-        if (!exists($self->{PKData}{$e_no}) || $self->{PKData}{$e_no}[0] == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、被害者として判定
+        if (!exists($self->{CommonDatas}{Prize}{$e_no}) || $self->{CommonDatas}{Prize}{$e_no} == 0) { # 襲撃者が過去にPKをしておらず対象がPKのとき、被害者として判定
             $assault_type = 6;
         } else {
             if ($enemy_pker) { $assault_type = 4;}
@@ -257,6 +275,30 @@ sub GetAssaultType{
     return $assault_type;
 }
 
+
+#-----------------------------------#
+#    デュエル相手に賞金首がいる時に正を返す
+#------------------------------------
+#    引数｜デュエル予告TABLEノード
+#-----------------------------------#
+sub CheckEnemyWanted{
+    my $self = shift;
+    my $node = shift;
+
+    if (!$node) {return 0;}
+
+    my $td_nodes    = &GetNode::GetNode_Tag("td", \$node);
+
+    my $right_link_nodes = &GetNode::GetNode_Tag("a", \$$td_nodes[2]);
+
+    # 先頭ENoの判定
+    foreach my $right_link_node (@$right_link_nodes) {
+        my $e_no = &GetIkkiNode::GetENoFromLink($right_link_node);
+        if (exists($self->{CommonDatas}{Prize}{$e_no}) && $self->{CommonDatas}{Prize}{$e_no} > 0) {return 1;}
+    }
+
+    return 0;
+}
 
 #-----------------------------------#
 #    デュエル相手にPKがいる時に正を返す
@@ -276,12 +318,11 @@ sub CheckEnemyPKer{
     # 先頭ENoの判定
     foreach my $right_link_node (@$right_link_nodes) {
         my $e_no = &GetIkkiNode::GetENoFromLink($right_link_node);
-        if (exists($self->{CommonDatas}{Prize}{$e_no}) && $self->{CommonDatas}{Prize}{$e_no} > 0) {return 1;}
+        if (exists($self->{PKData}{$e_no}) && $self->{PKData}{$e_no}[0] > 0) {return 1;}
     }
 
     return 0;
 }
-
 
 #-----------------------------------#
 #    出力
