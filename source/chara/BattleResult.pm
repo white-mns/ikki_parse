@@ -146,8 +146,8 @@ sub GetBattleEnemy{
         my $area_id = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[0];
         my $advance = $self->{CommonDatas}{CurrentArea}{$self->{ENo}}[1];
 
+        $self->{Datas}{NewBattleEnemy}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
         if ($battle_result == 1) {
-            $self->{Datas}{NewBattleEnemy}->RecordNewBattleEnemyData($enemy_id, $is_boss, $area_id, $advance);
 
             $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, 0, $is_boss, $area_id, $advance, , $self->{PNo});
             $self->{Datas}{NewDefeatEnemy}->RecordNewDefeatEnemyData($enemy_id, $self->{MemberNum}, $is_boss, $area_id, $advance, , $self->{PNo});
