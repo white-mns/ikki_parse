@@ -37,6 +37,7 @@ sub Init{
     my $self = shift;
     ($self->{ResultNo}, $self->{GenerateNo}, $self->{CommonDatas}) = @_;
     ($self->{BeforeResultNo}, $self->{BeforeGenerateNo}) = ($self->{ResultNo} - 1, 0);
+    $self->{AllDefeatIDPnoMemNum} = {};
     
     #初期化
     $self->{Datas}{NewDefeatEnemy} = StoreData->new();
@@ -111,10 +112,14 @@ sub RecordNewDefeatEnemyData{
     my $party_no  = shift;
 
     my $key = $enemy_id . "_" . $member_num;
+    my $party_key = $enemy_id . "_" . $party_no . "_" . $member_num;
 
     if (exists($self->{BeforeDefeatEnemy}{$key})) {return;}
+    if (exists($self->{AllDefeatIDPnoMemNum}{$party_key})) {return;} # 戦闘中二体以上同じ敵がいたときに二体目以降を除外
 
     $self->{Datas}{NewDefeatEnemy}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{BeforeResultNo}, $self->{BeforeGenerateNo}, $party_no, $enemy_id, $member_num, $is_boss) ));
+
+    $self->{AllDefeatIDPnoMemNum}{$party_key} = 1;
 
     if (exists($self->{AllDefeatEnemy}{$key})) {return;}
 
