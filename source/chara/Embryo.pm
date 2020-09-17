@@ -139,8 +139,8 @@ sub GetEmbryoData{
         }
 
         $self->{Datas}{Embryo}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{ENo}, $order, $embryo_id, $is_physics, $lv) ));
-        my $div_Enb_node = $embryo_right_node->right;
-        $self->GetSkillData($div_Enb_node, $order, $embryo_id, $is_physics);
+        my $skill_node = $embryo_right_node->right;
+        $self->GetSkillData($skill_node, $order, $embryo_id, $is_physics);
 
         $self->{Datas}{NewEmbryo}->RecordNewEmbryoData($embryo_id);
 
@@ -155,14 +155,12 @@ sub GetEmbryoData{
 #-----------------------------------#
 sub GetSkillData{
     my $self  = shift;
-    my $div_Enb_node = shift;
+    my $skill_node = shift;
     my $order = shift;
     my $embryo_id  = shift;
     my $is_physics = shift;
 
-    if ($div_Enb_node->tag ne "div") {return;}
-
-    my $table_skill_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "PD0", \$div_Enb_node);
+    my $table_skill_nodes = &GetNode::GetNode_Tag_Attr("table", "class", "PD0", \$skill_node);
     my $tr_nodes = &GetNode::GetNode_Tag("tr", \$$table_skill_nodes[0]);
 
     foreach my $tr_node (@$tr_nodes) {
