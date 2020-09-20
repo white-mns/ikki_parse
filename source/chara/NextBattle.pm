@@ -190,12 +190,11 @@ sub GetNextBattleInfo{
     $name_id = $self->{CommonDatas}{ProperName}->GetOrAddId($$u_R5i_nodes[0]->as_text);
     $member_num = int( scalar(@$i_nodes) );
 
-    my $enemy_names = "";
+    my $enemy_names = ",";
 
     foreach my $i_node (@$i_nodes) {
         $enemy_names .= $i_node->as_text . ","
     }
-    chomp($enemy_names);
 
     $self->{Datas}{NextBattleInfo}->AddData(join(ConstData::SPLIT, ($self->{ResultNo}, $self->{GenerateNo}, $self->{PNo}, $is_boss, $name_id, $member_num, $enemy_names) ));
 
