@@ -50,8 +50,8 @@ if [ -f ./data/orig/result${ZIP_NAME}.zip ]; then
     cd ../../../
 fi
 
-perl ./GetData.pl      $RESULT_NO $GENERATE_NO
-perl ./UploadParent.pl $RESULT_NO $GENERATE_NO
+#perl ./GetData.pl      $RESULT_NO $GENERATE_NO
+#perl ./UploadParent.pl $RESULT_NO $GENERATE_NO
 
 # UTFファイルを圧縮
 if [ -d ./data/utf/result${ZIP_NAME} ]; then

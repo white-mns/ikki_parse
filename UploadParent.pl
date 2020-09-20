@@ -79,6 +79,7 @@ sub Main {
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PK_DATA,           "pk_data",             "./output/chara/pk_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_ASSAULT,           "assaults",            "./output/chara/assault_");
         &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PRIZE,             "prizes",              "./output/chara/prize_");
+        &UploadResult($upload, $result_no, $generate_no, ConstData::EXE_CHARA_PK_RESULT,         "pk_results",          "./output/chara/pk_result_");
     }
     if (ConstData::EXE_BATTLE) {
     }
