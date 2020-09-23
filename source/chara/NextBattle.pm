@@ -301,7 +301,7 @@ sub CheckBossBattle{
 
     my $i_nodes = &GetNode::GetNode_Tag("i", \$$td_nodes[2]);
 
-    my @boss_names = ("兵士");
+    my @boss_names = ("兵士","帝王イカ","ラズロ","ペスニャ");
 
     foreach my $boss_name (@boss_names) {
         if ($$i_nodes[0]->as_text eq $boss_name) {return 1;}
