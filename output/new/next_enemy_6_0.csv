@@ -1,8 +1,8 @@
 result_no	generate_no	enemy_id	is_boss	area_id	advance	
 6	0	225	0	5	1
 6	0	226	0	5	2
-6	0	227	0	7	3
-6	0	228	0	7	3
+6	0	227	1	7	3
+6	0	228	1	7	3
 6	0	229	0	4	3
 6	0	230	0	6	1
 6	0	231	0	4	1
